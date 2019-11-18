@@ -28,8 +28,29 @@ namespace AESCrypter
             // AES Key erstellen
             if (!File.Exists("KeyFile.crt"))
             {
-                _AESKey = Crypt.AES.GenerateKey(256);
-                File.WriteAllText("KeyFile.crt", _AESKey);
+                DialogResult dlr =  MessageBox.Show("Mit [OK] wird ein neues KeyFile erzeugt.", "Kein KeyFile gefunden!", MessageBoxButtons.OKCancel,MessageBoxIcon.Exclamation);
+                if (dlr == DialogResult.Cancel)
+                {
+                    // vorhandenes KeyFile suchen
+                    OpenFileDialog dlg = new OpenFileDialog();
+                    dlg.Filter = "AESCrypter Keyfiles (*.crt)|*.crt|Alle Dateien (*.*)|*.*";
+                    dlr = dlg.ShowDialog();
+                    if (dlr == DialogResult.OK)
+                    {
+                        File.Copy(dlg.FileName, Path.Combine(Application.StartupPath, "KeyFile.crt"));
+                    }
+                    else
+                    {
+                        MessageBox.Show("Kein KeyFile ausgewählt! Bitte Neu starten.","AESCrypter",MessageBoxButtons.OK,MessageBoxIcon.Stop);
+                        Environment.Exit(-1);
+                    }
+                }
+                else
+                {
+                    // neues Kexfile erstellen
+                    _AESKey = Crypt.AES.GenerateKey(256);
+                    File.WriteAllText("KeyFile.crt", _AESKey);
+                }
             }
 
             _AESKey = File.ReadAllText("KeyFile.crt");
