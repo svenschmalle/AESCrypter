@@ -149,7 +149,37 @@ namespace AESCrypter
             }
             catch (Exception)
             {
-                MessageBox.Show("Fehler beim Entschlüsseln!");
+                // Wenn das Entschlüsseln mit den Standard-Key nicht funktioniert, dann mit anderen Keys versuchen
+                bool ErfolgreichEntschluesselt = false;
+
+                string[] fileEntries = Directory.GetFiles(Application.StartupPath,"*.crt");
+                foreach (string fileName in fileEntries)
+                {
+                    ErfolgreichEntschluesselt = Entschluesseln(fileName);
+                    if (ErfolgreichEntschluesselt)
+                    {
+                        return;
+                    }
+                }
+
+                if (!ErfolgreichEntschluesselt)
+                {
+                    MessageBox.Show("Fehler beim Entschlüsseln!");
+                }
+            }
+        }
+
+        private bool Entschluesseln(string Keyfile)
+        {
+            try
+            {
+                string AESKlarText = Crypt.AES.Decrypt(textBox_crypt.Text, File.ReadAllText(Keyfile), 256);
+                textBox_text.Text = AESKlarText;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
 
