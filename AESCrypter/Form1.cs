@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,6 +21,9 @@ namespace AESCrypter
         public Form1()
         {
             InitializeComponent();
+
+            // Versionsnummer in der Form anzeigen
+            this.Text = $"{this.Text}  [{Assembly.GetEntryAssembly().GetName().Version}]";
 
             // AES Key erstellen
             if (!File.Exists("KeyFile.crt"))
