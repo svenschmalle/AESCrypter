@@ -31,7 +31,20 @@ namespace AESCrypter
             _AESKey = File.ReadAllText("KeyFile.crt");
             
             _ConfigFile = Path.Combine(Application.StartupPath, "config.json");
-            _Config = new Classes.config();          
+            _Config = new Classes.config();
+
+            // Initiale Config erstellen, falls noch nicht vorhanden
+            if (!File.Exists(_ConfigFile))
+            {
+                _Config.AZ_gross = true;
+                _Config.laenge_gesamt = 10;
+                _Config.Zahlen09 = true;
+                _Config.az_klein = true;
+                _Config.Specialchars = true;
+                _Config.speichern(_ConfigFile);
+            }
+            
+            // Config einlesen
             if (File.Exists(_ConfigFile))
             {
                 _Config.laden(_ConfigFile);
@@ -49,10 +62,10 @@ namespace AESCrypter
                 }
 
                 HistorieLaden();
-            }
 
-            // Beim Starten soll schon ein Passwort generiert werden
-            Generieren();
+                // Beim Starten soll schon ein Passwort generiert werden
+                Generieren();
+            }          
         }
 
         private void button_generieren_Click(object sender, EventArgs e)
